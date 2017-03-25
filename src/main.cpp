@@ -14,7 +14,7 @@ int main(int argc, char const *argv[]) {
     foretGenerateur* fg = new foretGenerateur();
 
     //cout << fg->getForet()["n"]->toString(0) << endl;
-    Scanner* sc = new Scanner("s0 -> [ 'a'#1 ]#1242 + 'b', ;");
+    Scanner* sc = new Scanner("s0 -> [ 'a'#1 ]#1242 . 'b', ;");
     Analyseur* analyseur = new Analyseur(fg->getForet(), sc);
     std::cout << analyseur->analyse(fg->getForet()["s"]) << endl;
 

@@ -6,6 +6,10 @@
 #include "OperationElementaire.hpp"
 #include <stack>
 #include "Atom.hpp"
+#include "Union.hpp"
+#include "Conc.hpp"
+#include "Un.hpp"
+#include "Star.hpp"
 
 using namespace std;
 

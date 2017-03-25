@@ -1,3 +1,5 @@
+#ifndef STAR__HPP__
+#define STAR__HPP__
 #include <string>
 #include "OperationElementaire.hpp"
 
@@ -24,3 +26,5 @@ public:
 private:
 	OperationElementaire* stare;
 };
+
+#endif // STAR__HPP__

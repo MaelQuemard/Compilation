@@ -1,3 +1,6 @@
+#ifndef UNION__HPP__
+#define UNION__HPP__
+
 #include <string>
 #include "OperationElementaire.hpp"
 
@@ -26,3 +29,5 @@ private:
 	OperationElementaire* left;
 	OperationElementaire* right;
 };
+
+#endif // UNION__HPP__

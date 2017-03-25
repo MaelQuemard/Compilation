@@ -17,7 +17,7 @@ public:
 
 	Scanner(string);
 	~Scanner();
-	vector<string> symbole = {"+", "/", ",", ";", "[", "]", "->"};
+	vector<string> symbole = {"+", "/", ",", ";", "[", "]", "->", "."};
 	// C'est des codes ascii !!
 	vector<string> separateur = {"32", "8", "9"};
 	map<string, string> scan();

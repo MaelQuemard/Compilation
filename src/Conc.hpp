@@ -1,3 +1,5 @@
+#ifndef CONC__HPP__
+#define CONC__HPP__
 #include <string>
 #include "OperationElementaire.hpp"
 
@@ -27,3 +29,5 @@ private:
 	OperationElementaire* left;
 	OperationElementaire* right;
 };
+
+#endif // CONC__HPP__

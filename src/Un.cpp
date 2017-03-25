@@ -20,3 +20,10 @@ string Un::toString(int profondeur) {
 	}
 	return "--->" + this->nom + "\n" + ret + this->une->toString(profondeur+1);
 }
+
+OperationElementaire* Un::getLeft(){}
+OperationElementaire* Un::getRight(){}
+OperationElementaire* Un::getStare(){}
+string Un::getCode(){}
+int Un::getAction(){}
+AtomType Un::getAType(){}

@@ -10,7 +10,7 @@ foretGenerateur::foretGenerateur() {
 
 OperationElementaire* foretGenerateur::genA1() {
     OperationElementaire* n = new Atom("n", 0, NTER);
-    OperationElementaire* fleche = new Atom("->", 1, TER);
+    OperationElementaire* fleche = new Atom("->", 0, TER);
     OperationElementaire* e = new Atom("e", 0, NTER);
     OperationElementaire* virgule = new Atom(",", 1, TER);
     OperationElementaire* ptvirgule = new Atom(";", 0, TER);
@@ -33,9 +33,9 @@ OperationElementaire* foretGenerateur::genA3() {
     OperationElementaire* plus = new Atom("+",0,TER);
     OperationElementaire* t2 = new Atom("t", 3, NTER);
 
-    OperationElementaire* conc1 = new Conc(plus,t);
+    OperationElementaire* conc1 = new Conc(plus,t2);
     OperationElementaire* star = new Star(conc1);
-    OperationElementaire* conc2 = new Conc(t2, star);
+    OperationElementaire* conc2 = new Conc(t, star);
     return conc2;
 }
 
@@ -44,9 +44,9 @@ OperationElementaire* foretGenerateur::genA4() {
     OperationElementaire* point = new Atom(".",0,TER);
     OperationElementaire* f2 = new Atom("f", 4, NTER);
 
-    OperationElementaire* conc1 = new Conc(point, f);
+    OperationElementaire* conc1 = new Conc(point, f2);
     OperationElementaire* star = new Star(conc1);
-    OperationElementaire* conc2 = new Conc(f2, star);
+    OperationElementaire* conc2 = new Conc(f, star);
     return conc2;
 }
 
@@ -96,7 +96,7 @@ OperationElementaire* foretGenerateur::genA6() {
     OperationElementaire* conc6 = new Conc(unOuvre, conc5);
     OperationElementaire* union4 = new Union(union3, conc6);
 */
-    OperationElementaire* conc1 = new Conc(unOuvre, e);
+    /*OperationElementaire* conc1 = new Conc(unOuvre, e);
     OperationElementaire* conc2 = new Conc(conc1, unFerme);
     OperationElementaire* conc3 = new Conc(crochetOuvre, e);
     OperationElementaire* conc4 = new Conc(conc3, crochetFerme);
@@ -106,6 +106,17 @@ OperationElementaire* foretGenerateur::genA6() {
     OperationElementaire* union2 = new Union(union1, conc6);
     OperationElementaire* union3 = new Union(union2, elter);
     OperationElementaire* union4 = new Union(union3, idnter);
+*/
+    OperationElementaire* union1 = new Union(idnter, elter);
+    OperationElementaire* conc1 = new Conc(e, parFerme);
+    OperationElementaire* conc2 = new Conc(parOuvre, conc1);
+    OperationElementaire* union2 = new Union(union1, conc2);
+    OperationElementaire* conc3 = new Conc(e, crochetFerme);
+    OperationElementaire* conc4 = new Conc(crochetOuvre, conc3);
+    OperationElementaire* union3 = new Union(union2, conc4);
+    OperationElementaire* conc5 = new Conc(e, unFerme);
+    OperationElementaire* conc6 = new Conc(unOuvre, conc5);
+    OperationElementaire* union4 = new Union(union3, conc6);
     return union4;
 }
 
