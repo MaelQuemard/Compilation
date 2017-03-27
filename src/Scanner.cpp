@@ -54,7 +54,7 @@ map<string, string> Scanner::scan() {
                 // return scan(chaine.substr(i+1), v);
                 this->chaine = chaine.substr(i+1);
                 return ret;
-            } else if (estSymbole(s)) {
+            } else if (estSymbole(s) && uniteLexicale[0] != '\'') {
                 int testIndex = i+1;
                 stringstream ss1;
                 string s1;
@@ -131,21 +131,25 @@ bool Scanner::estSeparateur(string s) {
 }
 
 bool Scanner::estTerminal(string s) {
-    if (regex_match(s, regex("['][()_0-9a-zA-Z- ]*['][#]*[0-9]*"))) {
-        return true;
+    if (s[0] == '\'') {
+        for (int i = 1; i <= s.size(); i++) {
+            if (s[i] == '\'') {
+                return true;
+            }
+        }
     }
     return false;
 }
 
 string Scanner::recupererAction(string s) {
     string ret;
-    if (regex_match(s, regex("[']*[()_0-9a-zA-Z- ]+[']*[#][0-9]+"))) {
+    //if (regex_match(s, regex("[']*[()_0-9a-zA-Z- ]+[']*[#][0-9]+"))) {
         for (int i = 0; i < s.size(); i++) {
             if (to_string(s[i]) == "35") {
                 ret += s.substr(i+1);
             }
         }
-    }
+    //}
     return ret;
 }
 
