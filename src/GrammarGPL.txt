@@ -1,0 +1,25 @@
+PGRM -> 'Program' . 'ident' . (/ DECL_CONST /) . (/ DECL_VAR /) . (/ DECL_TAB /) . (/ DECL_PROC /) . BLOC . '.'#28 ,
+DECL_CONST -> 'const' . 'ident'#1 . '=' . ENTIER#2 . ';' . [ 'ident'#1 . '=' . ENTIER#2 . ';' ] ,
+DECL_VAR -> (/ 'var' . 'ident'#1 . [ ',' . 'ident'#1 ] . ';' /) ,
+DECL_TAB -> (/ 'DONT KNOW' /) ,
+DECL_PROC -> (/ 'DONT KNOW' /) ,
+BLOC -> 'Begin' . INST . 'End' . '.' ,
+
+INST -> ( IF + WHILE + AFF + READ + WRITE ) . [ INST ] ,
+
+IF -> 'If' . BOOL . 'Then' . INST . (/ 'Else' . INST /) ,
+AFF -> ('ident' . OPEGAL . ( 'ident' + ENTIER ) . ( ';' + ( OPMATH . ( 'ident' + ENTIER ) . [ OPMATH . ( 'ident' + ENTIER ) ] . ';' ) ) ) ,
+WHILE -> 'While' . BOOL . 'Do' .  INST . 'EndWhile' ,
+READ -> 'Read' . 'ident' . ';' ,
+WRITE -> 'Writeln' . ('ident' + ENTIER ) . ';' ,
+
+BOOL -> TB . [ 'Ou' . TB ] ,
+TB -> FB . [ 'Et' . FB ] ,
+FB -> PB + 'Non' . PB ,
+PB -> ( 'ident' . ENTIER ) . OPREL . ( 'ident' + ENTIER ) + '[' . BOOL . ']' ,
+
+OPREL -> ( '==' + '>' + '<' + '>=' + '<=' + '!=' ) ,
+OPMATH -> ( '+' + '-' + '++' + '--' + '*' + '/' + '%' + '!' ) ,
+OPEGAL -> ( ':=' + '=' ) ,
+
+ENTIER -> [ '0' + '1' + '2' + '3' + '4' + '5' + '6' + '7' + '8' + '9' ] , ;

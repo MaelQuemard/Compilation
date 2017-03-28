@@ -17,10 +17,10 @@ public:
 
 	Scanner(string);
 	~Scanner();
-	vector<string> symbole = {"+", "/", ",", ";", "[", "]", "->", "."};
+	vector<string> symbole = {"+", ",", ";", "[", "]", "->", ".", "(/", "/)", "(", ")"};
 	// C'est des codes ascii !!
 	vector<string> separateur = {"32", "8", "9"};
-	map<string, string> scan();
+	map<string, string> scanG0();
 	bool premierEstEntier(string);
 	bool estSymbole(string);
 	bool estSeparateur(string);
@@ -29,6 +29,8 @@ public:
 	string recupererChaineSansAction(string);
 	vector<string> dicot;
 	vector<string> dicont;
+
+	map<string, string> scanGPL();
 
 private:
 	string chaine;

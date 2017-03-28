@@ -3,30 +3,30 @@
 Analyseur::Analyseur(map<string, OperationElementaire*> foret, Scanner* sc) {
     this->foret = foret;
     this->sc = sc;
-    this->uniteLexicale = sc->scan();
+    this->uniteLexicale = sc->scanG0();
 }
 
-bool Analyseur::analyse(OperationElementaire* op) {
+bool Analyseur::analyseG0(OperationElementaire* op) {
     bool ana;
     if (op->getNom() == "Conc") {
-        bool ana_tmp = analyse(op->getLeft());
+        bool ana_tmp = analyseG0(op->getLeft());
         if (ana_tmp) {
-            ana = analyse(op->getRight());
+            ana = analyseG0(op->getRight());
         } else {
             ana = false;
         }
     } else if (op->getNom() == "Union") {
-        if (analyse(op->getLeft())) {
+        if (analyseG0(op->getLeft())) {
             ana = true;
         } else {
-            ana = analyse(op->getRight());
+            ana = analyseG0(op->getRight());
         }
     } else if (op->getNom() == "Star") {
         ana = true;
-        while (analyse(op->getStare())) {}
+        while (analyseG0(op->getStare())) {}
     } else if (op->getNom() == "Un") {
         ana = true;
-        if (analyse(op->getUne())) {}
+        if (analyseG0(op->getUne())) {}
     } else if (op->getNom() == "Atom") {
         switch (op->getAType()) {
             // Cas Terminal
@@ -40,7 +40,7 @@ bool Analyseur::analyse(OperationElementaire* op) {
                         AtomType aType = this->uniteLexicale["code"] == "IDNTER" ? NTER : TER;
                         G0Action(op, actionType, aType);
                     }
-                    this->uniteLexicale = this->sc->scan();
+                    this->uniteLexicale = this->sc->scanG0();
                     ana = true;
                 } else {
                     ana = false;
@@ -48,7 +48,7 @@ bool Analyseur::analyse(OperationElementaire* op) {
                 break;
             // Cas non terminal
             case 1:
-                if (analyse(this->foret[op->getCode()])) {
+                if (analyseG0(this->foret[op->getCode()])) {
                     if (op->getAction() != 0) {
                         int actionType1;
                         stringstream s1;
@@ -146,4 +146,70 @@ void Analyseur::G0Action(OperationElementaire* op, int actionType, AtomType aTyp
             std::cout << "Default case" << '\n';
             break;
     }
+}
+
+bool Analyseur::analyseGPL(OperationElementaire* op) {
+    bool ana;
+    if (op->getNom() == "Conc") {
+        bool ana_tmp = analyseGPL(op->getLeft());
+        if (ana_tmp) {
+            ana = analyseGPL(op->getRight());
+        } else {
+            ana = false;
+        }
+    } else if (op->getNom() == "Union") {
+        if (analyseGPL(op->getLeft())) {
+            ana = true;
+        } else {
+            ana = analyseGPL(op->getRight());
+        }
+    } else if (op->getNom() == "Star") {
+        ana = true;
+        while (analyseGPL(op->getStare())) {}
+    } else if (op->getNom() == "Un") {
+        ana = true;
+        if (analyseGPL(op->getUne())) {}
+    } else if (op->getNom() == "Atom") {
+        switch (op->getAType()) {
+            // Cas Terminal
+            case 0:
+                if (op->getCode() == this->uniteLexicale["code"]) {
+                    if (op->getAction() != 0) {
+                        int actionType;
+                        stringstream s;
+                        s << this->uniteLexicale["action"];
+                        s >> actionType;
+                        AtomType aType = this->uniteLexicale["code"] == "IDNTER" ? NTER : TER;
+                        GPLAction(op, actionType, aType);
+                    }
+                    this->uniteLexicale = this->sc->scanGPL();
+                    ana = true;
+                } else {
+                    ana = false;
+                }
+                break;
+            // Cas non terminal
+            case 1:
+                if (analyseGPL(this->foret[op->getCode()])) {
+                    if (op->getAction() != 0) {
+                        int actionType1;
+                        stringstream s1;
+                        s1 << this->uniteLexicale["action"];
+                        s1 >> actionType1;
+                        AtomType aType = this->uniteLexicale["code"] == "IDNTER" ? NTER : TER;
+                        GPLAction(op, actionType1, aType);
+                    }
+                    ana = true;
+                }
+                break;
+            default:
+                ana = false;
+                break;
+        }
+    }
+    return ana;
+}
+
+void Analyseur::GPLAction(OperationElementaire* op, int actionType, AtomType aType) {
+
 }

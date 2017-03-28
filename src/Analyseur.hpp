@@ -19,8 +19,11 @@ public:
 
 	Analyseur(map<string, OperationElementaire*>, Scanner*);
 	~Analyseur();
-    bool analyse(OperationElementaire*);
+    bool analyseG0(OperationElementaire*);
 	void G0Action(OperationElementaire*, int, AtomType);
+
+	bool analyseGPL(OperationElementaire*);
+	void GPLAction(OperationElementaire*, int, AtomType);
 
 private:
 	map<string, OperationElementaire*> foret;
