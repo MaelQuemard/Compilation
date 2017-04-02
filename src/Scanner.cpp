@@ -4,6 +4,10 @@ Scanner::Scanner(string chaine) {
     this->chaine = chaine;
 }
 
+void Scanner::modifierChaine(string chaine) {
+    this->chaine = chaine;
+}
+
 map<string, string> Scanner::scanG0() {
     string uniteLexicale = "";
     for (int i = 0; i <= chaine.size(); ++i) {
@@ -21,8 +25,8 @@ map<string, string> Scanner::scanG0() {
                 ret["code"] = "ELTER";
                 ret["action"] = recupererAction(uniteLexicale);
                 ret["type"] = "Terminal";
-                ret["chaine"] = recupererChaineSansAction(uniteLexicale);
-                //this->dicot.push_back(recupererChaineSansAction(uniteLexicale));
+                ret["chaine"] = recupererChaineSansQuote(recupererChaineSansAction(uniteLexicale));
+                this->dicot.push_back(recupererChaineSansQuote(recupererChaineSansAction(uniteLexicale)));
                 // v.push_back(ret);
                 // return scan(chaine.substr(i), v);
                 this->chaine = chaine.substr(i);
@@ -88,7 +92,7 @@ map<string, string> Scanner::scanG0() {
                 ret["chaine"] = recupererChaineSansAction(uniteLexicale);
                 // v.push_back(ret);
                 // uniteLexicale = "";
-                //this->dicont.push_back(recupererChaineSansAction(uniteLexicale));
+                this->dicont.push_back(recupererChaineSansAction(uniteLexicale));
                 this->chaine = chaine.substr(i);
                 return ret;
             } else if (to_string(uniteLexicale[0]) == "39") {
@@ -169,6 +173,51 @@ string Scanner::recupererChaineSansAction(string s) {
     return s;
 }
 
+// map<string, string> Scanner::scanGPL() {
+//     string uniteLexicale = "";
+//     for (int i = 0; i <= chaine.size(); ++i) {
+//         std::cout << "uniteLexicale :: "  << uniteLexicale<< '\n';
+//         map<string, string> ret;
+//
+//         if (estSeparateur(to_string(chaine[i])) || i == chaine.size()) {
+//             if (estEntier(uniteLexicale)) {
+//                 ret["code"] = "ENTIER";
+//                 ret["action"] = recupererAction(uniteLexicale);
+//                 ret["type"] = "ENTIER";
+//                 ret["chaine"] = recupererChaineSansAction(uniteLexicale);
+//                 //this->dicot.push_back(recupererChaineSansAction(uniteLexicale));
+//                 // v.push_back(ret);
+//                 // return scan(chaine.substr(i), v);
+//                 this->chaine = chaine.substr(i+1);
+//                 uniteLexicale = "";
+//                 return ret;
+//             } else if (estIdent(uniteLexicale)) {
+//                 ret["code"] = "IDENT";
+//                 ret["action"] = recupererAction(uniteLexicale);;
+//                 ret["type"] = "IDENT";
+//                 ret["chaine"] = recupererChaineSansAction(uniteLexicale);
+//                 // v.push_back(ret);
+//                 // return scan(chaine.substr(i+1), v);
+//                 this->chaine = chaine.substr(i+1);
+//                 uniteLexicale = "";
+//                 return ret;
+//             } else {
+//                 ret["code"] = "SYMBOLE";
+//                 ret["action"] = recupererAction(uniteLexicale);;
+//                 ret["type"] = "SYMBOLE";
+//                 ret["chaine"] = recupererChaineSansAction(uniteLexicale);
+//                 // v.push_back(ret);
+//                 // return scan(chaine.substr(i+1), v);
+//                 this->chaine = chaine.substr(i+1);
+//                 uniteLexicale = "";
+//                 return ret;
+//             }
+//         } else {
+//             uniteLexicale += chaine[i];
+//         }
+//     }
+// }
+
 map<string, string> Scanner::scanGPL() {
     string uniteLexicale = "";
     for (int i = 0; i <= chaine.size(); ++i) {
@@ -179,8 +228,8 @@ map<string, string> Scanner::scanGPL() {
         ss >> s;
 
         if (estSeparateur(to_string(chaine[i])) || i == chaine.size() || estSymbole(uniteLexicale) || estSymbole(s)) {
-            if (premierEstEntier(uniteLexicale))
-                throw invalid_argument("Unité lexicale invalide '" + uniteLexicale + "'");
+            // if (premierEstEntier(uniteLexicale))
+            //     throw invalid_argument("Unité lexicale invalide '" + uniteLexicale + "'");
 
             if (estTerminal(uniteLexicale)) {
                 ret["code"] = "ELTER";
@@ -246,8 +295,15 @@ map<string, string> Scanner::scanGPL() {
                 // return scan(chaine.substr(testIndex), v);
                 this->chaine = chaine.substr(testIndex);
                 return ret;
+            } else if (estIdent(uniteLexicale)) {
+                ret["code"] = recupererChaineSansAction(uniteLexicale);
+                ret["action"] = recupererAction(uniteLexicale);
+                ret["type"] = "Non terminal";
+                ret["chaine"] = recupererChaineSansAction(uniteLexicale);
+                this->chaine = chaine.substr(i);
+                return ret;
             } else if (!uniteLexicale.empty() && to_string(uniteLexicale[0]) != "39"){
-                ret["code"] = "IDNTER";
+                ret["code"] = "ident";
                 ret["action"] = recupererAction(uniteLexicale);
                 ret["type"] = "Non terminal";
                 ret["chaine"] = recupererChaineSansAction(uniteLexicale);
@@ -274,4 +330,30 @@ map<string, string> Scanner::scanGPL() {
             uniteLexicale += chaine[i];
         }
     }
+}
+
+bool Scanner::estEntier(string s) {
+    if (regex_match(s, regex("[0-9]+"))){
+        return true;
+    }
+    return false;
+}
+
+bool Scanner::estIdent(string s) {
+    for (int i = 0; i < dicot.size(); i++) {
+        if (s == dicot[i]) {
+            return true;
+        }
+    }
+    return false;
+}
+
+string Scanner::recupererChaineSansQuote(string s) {
+    string chaineSansQuote = "";
+    for (int i = 0; i < s.size(); i++) {
+        if (s[i] != '\'') {
+            chaineSansQuote += s[i];
+        }
+    }
+    return chaineSansQuote;
 }

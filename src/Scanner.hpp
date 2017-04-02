@@ -17,6 +17,8 @@ public:
 
 	Scanner(string);
 	~Scanner();
+	void modifierChaine(string);
+
 	vector<string> symbole = {"+", ",", ";", "[", "]", "->", ".", "(/", "/)", "(", ")"};
 	// C'est des codes ascii !!
 	vector<string> separateur = {"32", "8", "9"};
@@ -31,6 +33,10 @@ public:
 	vector<string> dicont;
 
 	map<string, string> scanGPL();
+	vector<string> symboleI = {"Program", ";", "var", "=", "Begin", "IF", "THEN", ".", "==", "=", "<=", ">=", "!="};
+	bool estEntier(string);
+	bool estIdent(string);
+	string recupererChaineSansQuote(string);
 
 private:
 	string chaine;

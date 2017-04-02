@@ -13,6 +13,8 @@
 
 using namespace std;
 
+enum code { AFF, LDA, LDV, LDC, JMP, JIF, JSR, RSR, SUP, SUPE, INF, INFE, EG, DIFF, AND, OR, NOT, ADD, SUB, DIV, MULT, NEG, INC, DEC, RD, RDLN, WRT, WRTLN };
+
 class Analyseur
 {
 public:
@@ -24,11 +26,17 @@ public:
 
 	bool analyseGPL(OperationElementaire*);
 	void GPLAction(OperationElementaire*, int, AtomType);
+	void setUnitelexicale();
+	map<string, OperationElementaire*> getForet();
 
 private:
 	map<string, OperationElementaire*> foret;
 	Scanner* sc;
 	map<string, string> uniteLexicale;
 	stack<OperationElementaire*> s;
+
+	vector<int> p_code;
+	vector<int> pilex;
+	map<string, int> itab;
 
 };

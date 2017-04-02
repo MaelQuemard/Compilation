@@ -1,15 +1,13 @@
-PGRM -> 'Program' . 'ident' . (/ DECL_CONST /) . (/ DECL_VAR /) . (/ DECL_TAB /) . (/ DECL_PROC /) . BLOC . '.'#28 ,
+PRGM -> 'Program' . 'ident' . ';' . (/ DECL_CONST /) . (/ DECL_VAR /) . BLOC . '.'#28 ,
 DECL_CONST -> 'const' . 'ident'#1 . '=' . ENTIER#2 . ';' . [ 'ident'#1 . '=' . ENTIER#2 . ';' ] ,
 DECL_VAR -> (/ 'var' . 'ident'#1 . [ ',' . 'ident'#1 ] . ';' /) ,
-DECL_TAB -> (/ 'DONT KNOW' /) ,
-DECL_PROC -> (/ 'DONT KNOW' /) ,
 BLOC -> 'Begin' . INST . 'End' . '.' ,
 
 INST -> ( IF + WHILE + AFF + READ + WRITE ) . [ INST ] ,
 
-IF -> 'If' . BOOL . 'Then' . INST . (/ 'Else' . INST /) ,
+IF -> 'IF' . BOOL . 'THEN' . INST . (/ 'ELSE' . INST /) ,
 AFF -> ('ident' . OPEGAL . ( 'ident' + ENTIER ) . ( ';' + ( OPMATH . ( 'ident' + ENTIER ) . [ OPMATH . ( 'ident' + ENTIER ) ] . ';' ) ) ) ,
-WHILE -> 'While' . BOOL . 'Do' .  INST . 'EndWhile' ,
+WHILE -> 'WHILE' . BOOL . 'DO' .  INST . 'ENDWHILE' ,
 READ -> 'Read' . 'ident' . ';' ,
 WRITE -> 'Writeln' . ('ident' + ENTIER ) . ';' ,
 
