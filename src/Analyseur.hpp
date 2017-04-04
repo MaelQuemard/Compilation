@@ -1,5 +1,9 @@
+#ifndef __ANALYSEUR__HPP
+#define __ANALYSEUR__HPP
+
 #include <string>
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <map>
 #include "Scanner.hpp"
@@ -13,7 +17,7 @@
 
 using namespace std;
 
-enum code { AFF, LDA, LDV, LDC, JMP, JIF, JSR, RSR, SUP, SUPE, INF, INFE, EG, DIFF, AND, OR, NOT, ADD, SUB, DIV, MULT, NEG, INC, DEC, RD, RDLN, WRT, WRTLN };
+enum code { AFF, LDA, LDV, LDC, JMP, JIF, JSR, RSR, SUP, SUPE, INF, INFE, EG, DIFF, AND, OR, NOT, ADD, SUB, DIV, MULT, NEG, INC, DEC, RD, RDLN, WRT, WRTLN, STOP };
 
 class Analyseur
 {
@@ -28,6 +32,12 @@ public:
 	void GPLAction(OperationElementaire*, int, AtomType);
 	void setUnitelexicale();
 	map<string, OperationElementaire*> getForet();
+	int stringToInt(string);
+
+	vector<int> getPCode();
+	vector<int> getPilex();
+
+	void setNameProg(string);
 
 private:
 	map<string, OperationElementaire*> foret;
@@ -39,4 +49,12 @@ private:
 	vector<int> pilex;
 	map<string, int> itab;
 
+	string valeurEntier = "";
+	string valeurOperateur = "";
+	string valeurOperateurMath = "";
+
+	string nameProg;
+
 };
+
+#endif // __ANALYSEUR__HPP

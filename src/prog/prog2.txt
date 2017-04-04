@@ -1,0 +1,14 @@
+Program prog2 ;
+var I , A , B ;
+BEGIN
+    I = 0 ;
+    A = 15 ;
+    B = 3 ;
+    IF A == 15 THEN
+        Writeln A ;
+        A = A + B ;
+        Writeln A ;
+    ELSE
+        B = 42;
+    ENDIF
+END .

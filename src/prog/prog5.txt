@@ -1,0 +1,12 @@
+Program prog3 ;
+var I , A , B ;
+BEGIN
+    I = 0 ;
+    A = 15 ;
+    B = 3 ;
+    WHILE NOT B == 4 ! DO
+        Read I ;
+        Writeln I ;
+        B = 4 ;
+    ENDWHILE
+END .

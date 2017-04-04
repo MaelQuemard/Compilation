@@ -4,6 +4,7 @@
 #include "foretGenerateur.hpp"
 #include "Analyseur.hpp"
 #include "Scanner.hpp"
+#include "Interpreteur.hpp"
 #include <iostream>
 #include <fstream>
 #include <exception>
@@ -25,6 +26,7 @@ private:
     foretGenerateur* fg;
     Scanner* sc;
     Analyseur* analyseur;
+    Interpreteur* interpreteur;
 
 };
 

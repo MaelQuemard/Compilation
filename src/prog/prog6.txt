@@ -1,0 +1,15 @@
+Program prog6 ;
+var Value , Prev , PrevPrev , Total , I ;
+BEGIN
+    Read Value ;
+    I = 0 ;
+    Prev = 0 ;
+    PrevPrev = 1 ;
+    WHILE I < Value DO
+        Total = Prev + PrevPrev ;
+        PrevPrev = Prev ;
+        Prev = Total ;
+        I = I + 1 ;
+    ENDWHILE
+    Writeln Total ;
+END .

@@ -73,7 +73,7 @@ void Analyseur::G0Action(OperationElementaire* op, int actionType, AtomType aTyp
     switch (op->getAction()) {
         // Action 1 : créer arbre
         case 1:
-            std::cout << "Action 1" << '\n';
+            //std::cout << "Action 1" << '\n';
             if (!this->s.empty()) {
                 t1 = this->s.top();
                 this->s.pop();
@@ -81,7 +81,7 @@ void Analyseur::G0Action(OperationElementaire* op, int actionType, AtomType aTyp
                     t2 = this->s.top();
                     this->s.pop();
                     this->foret[t2->getCode()] = t1;
-                    std::cout << "MON CODE DE MON ARBRE : " << t2->getCode() << endl << "MA SUPER FORET DE " << t2->getCode() << endl << this->foret[t2->getCode()]->toString(0) << '\n';
+                    //std::cout << "MON CODE DE MON ARBRE : " << t2->getCode() << endl << "MA SUPER FORET DE " << t2->getCode() << endl << this->foret[t2->getCode()]->toString(0) << '\n';
                 }
             }
             break;
@@ -149,7 +149,7 @@ void Analyseur::G0Action(OperationElementaire* op, int actionType, AtomType aTyp
 }
 
 bool Analyseur::analyseGPL(OperationElementaire* op) {
-    std::cout << "analyseGPL::" << op->getNom() << '\n';
+    //std::cout << "analyseGPL::" << op->getNom() << '\n';
     bool ana;
     if (op->getNom() == "Conc") {
         bool ana_tmp = analyseGPL(op->getRight());
@@ -174,7 +174,7 @@ bool Analyseur::analyseGPL(OperationElementaire* op) {
         switch (op->getAType()) {
             // Cas Terminal
             case 0:
-                std::cout << "Atom :: Terminal : opCode : " << op->getCode() << " uniteLexicale : " << this->uniteLexicale["code"] << '\n';
+                //std::cout << "Atom :: Terminal : opCode : " << op->getCode() << " uniteLexicale : " << this->uniteLexicale["code"] << '\n';
                 if (op->getCode() == this->uniteLexicale["code"]) {
                     if (op->getAction() != 0) {
                         int actionType;
@@ -182,7 +182,7 @@ bool Analyseur::analyseGPL(OperationElementaire* op) {
                         s << op->getAction();
                         s >> actionType;
                         AtomType aType = this->uniteLexicale["code"] == "IDNTER" ? NTER : TER;
-                        std::cout << "--------------Ter----------------GPLAction : " << op->getAction() << '\n';
+                        //std::cout << "--------------Ter----------------GPLAction : " << op->getAction() << '\n';
                         GPLAction(op, actionType, aType);
                     }
                     this->uniteLexicale = this->sc->scanGPL();
@@ -193,7 +193,7 @@ bool Analyseur::analyseGPL(OperationElementaire* op) {
                 break;
             // Cas non terminal
             case 1:
-                std::cout << "Atom :: Non Terminal opCode : " << op->getCode() << " uniteLexicale : " << this->uniteLexicale["code"] << '\n';
+                //std::cout << "Atom :: Non Terminal opCode : " << op->getCode() << " uniteLexicale : " << this->uniteLexicale["code"] << '\n';
                 if (analyseGPL(this->foret[op->getCode()])) {
                     if (op->getAction() != 0) {
                         int actionType1;
@@ -201,7 +201,7 @@ bool Analyseur::analyseGPL(OperationElementaire* op) {
                         s1 << op->getAction();
                         s1 >> actionType1;
                         AtomType aType = this->uniteLexicale["code"] == "IDNTER" ? NTER : TER;
-                        std::cout << "-----------------------NON-Ter-------------------GPLAction : " << op->getAction() << '\n';
+                        //std::cout << "-----------------------NON-Ter-------------------GPLAction : " << op->getAction() << '\n';
                         GPLAction(op, actionType1, aType);
                     }
                     ana = true;
@@ -216,151 +216,206 @@ bool Analyseur::analyseGPL(OperationElementaire* op) {
 }
 
 void Analyseur::GPLAction(OperationElementaire* op, int actionType, AtomType aType) {
-    int ident;
-    ident = NULL;
-    stringstream s1;
-    s1.flush();
-    s1 << this->uniteLexicale["chaine"];
-    s1 >> ident;
     int i;
+
+    ofstream file;
+    std::string pcode_log = this->nameProg+".log";
+    file.open(pcode_log,std::ios::app);
 
     switch (actionType) {
         // Déclaration d'un ident (1)
         case 1:
-            cout << "Déclaration d'un ident : " << this->uniteLexicale["chaine"] << endl;
-            itab.insert( std::pair<string, int>(this->uniteLexicale["chaine"], pilex.size()+1));
+            //cout << "Déclaration d'un ident : " << this->uniteLexicale["chaine"] << endl;
+            itab.insert( std::pair<string, int>(this->uniteLexicale["chaine"], pilex.size()));
+            pilex.push_back(-999);
             break;
         // Donner une valeur a la déclaration d'un ident (2)
         case 2:
-            cout << "Donner une valeur a la déclaration d'un ident : "<< ident << endl;
-            pilex.push_back(ident);
+            //cout << "Donner une valeur a la déclaration d'un ident : "<< valeurEntier << endl;
+            pilex.push_back(stoi(valeurEntier));
+            valeurEntier = "";
             break;
         // Chargé une addresse (LDA) (3)
         case 3:
             i = itab[this->uniteLexicale["chaine"]];
-            std::cout << "Chargé une addresse (LDA) : " << this->uniteLexicale["chaine"] << " adresse : " << i << '\n';
+            //std::cout << "Chargé une addresse (LDA) : " << this->uniteLexicale["chaine"] << " adresse : " << i << '\n';
             p_code.push_back(LDA);
             p_code.push_back(i);
+            file << "LDA : " << i << endl;
             break;
         // Chargé une valeur (LDV) (4)
         case 4:
             i = itab[this->uniteLexicale["chaine"]];
-            std::cout << "Chargé une valeur:: chaine : " << this->uniteLexicale["chaine"] << " addresse : " << i << '\n';
+            //std::cout << "Chargé une valeur:: chaine : " << this->uniteLexicale["chaine"] << " addresse : " << i << '\n';
             p_code.push_back(LDV);
             p_code.push_back(i);
+            file << "LDV : " << i << endl;
             break;
         // Chargé une constante (LDC) (5)
         case 5:
-            std::cout << "Chargé une constante : "<< ident << '\n';
+            //std::cout << "Chargé une constante : "<< valeurEntier << '\n';
             p_code.push_back(LDC);
-            p_code.push_back(ident);
+            p_code.push_back(stoi(valeurEntier));
+            file << "LDC : " << valeurEntier << endl;
+            valeurEntier = "";
             break;
         // Identifer un opérateur mathématique (ADD, SUB, DIV...) (10)
         case 6:
-            std::cout << "Identifer un opérateur mathématique (ADD, SUB, DIV...) : " << this->uniteLexicale["chaine"] << '\n';
-            if (this->uniteLexicale["chaine"] == "+") {
+            //std::cout << "Identifer un opérateur mathématique (ADD, SUB, DIV...) : " << valeurOperateurMath << '\n';
+            if (valeurOperateurMath == "+") {
                 p_code.push_back(ADD);
-            } else if (this->uniteLexicale["chaine"] == "-") {
+                file << "ADD" << endl;
+            } else if (valeurOperateurMath == "-") {
                 p_code.push_back(SUB);
-            } else if (this->uniteLexicale["chaine"] == "++") {
+                file << "SUB" << endl;
+            } else if (valeurOperateurMath == "++") {
                 p_code.push_back(INC);
-            } else if (this->uniteLexicale["chaine"] == "--") {
+                file << "INC" << endl;
+            } else if (valeurOperateurMath == "--") {
                 p_code.push_back(DEC);
-            } else if (this->uniteLexicale["chaine"] == "*") {
+                file << "DEC" << endl;
+            } else if (valeurOperateurMath == "*") {
                 p_code.push_back(MULT);
-            } else if (this->uniteLexicale["chaine"] == "/") {
+                file << "MULT" << endl;
+            } else if (valeurOperateurMath == "/") {
                 p_code.push_back(DIV);
-            } else if (this->uniteLexicale["chaine"] == "!") {
+                file << "DIV" << endl;
+            } else if (valeurOperateurMath == "!") {
                 p_code.push_back(NEG);
+                file << "NEG" << endl;
             }
             break;
         // Cas pour lire une valeur (RDLN) (14)
         case 7:
-            std::cout << "Cas pour lire une valeur (RDLN) : " << '\n';
+            //std::cout << "Cas pour lire une valeur (RDLN) : " << '\n';
             p_code.push_back(RDLN);
             p_code.push_back(AFF);
+            file << "RDLN" << endl;
             break;
         // Ecrire une valeur (WRTLN) (16)
         case 8:
-            std::cout << "Ecrire une valeur (WRTLN)" << '\n';
+            //std::cout << "Ecrire une valeur (WRTLN)" << '\n';
             p_code.push_back(WRTLN);
+            file << "WRTLN" << endl;
             break;
         // Chargé un ou (OR) (30)
         case 9:
-            std::cout << "Chargé un ou (OR)" << '\n';
+            //std::cout << "Chargé un ou (OR)" << '\n';
             p_code.push_back(OR);
+            file << "OR" << endl;
             break;
         // Chargé un et (AND) (32)
         case 10:
-            std::cout << "Chargé un et (AND)" << '\n';
+            //std::cout << "Chargé un et (AND)" << '\n';
             p_code.push_back(AND);
+            file << "AND" << endl;
             break;
         // Chargé un negatif (NOT) (33)
         case 11:
-            std::cout << "Chargé un negatif (NOT)" << '\n';
+            //std::cout << "Chargé un negatif (NOT)" << '\n';
             p_code.push_back(NOT);
+            file << "NOT" << endl;
             break;
         // Dépiler l'opérateur (OR, AND, NEG) (31)
         case 12:
-            std::cout << "Dépiler l'opérateur (OR, AND, NEG)" << '\n';
+            //std::cout << "Dépiler l'opérateur (OR, AND, NEG)" << '\n';
             p_code.pop_back();
             break;
         // Identifier l'operateur relationnel (SUP, SUPE, INF...) (34)
         case 13:
-            std::cout << "Identifier l'operateur relationnel (SUP, SUPE, INF...) : " << this->uniteLexicale["chaine"] << '\n';
-            if (this->uniteLexicale["chaine"] == "==") {
+            //std::cout << "Identifier l'operateur relationnel (SUP, SUPE, INF...) : " << valeurOperateur << '\n';
+            if (valeurOperateur == "==") {
                 p_code.push_back(EG);
-            } else if (this->uniteLexicale["chaine"] == ">") {
+                file << "EG" << endl;
+            } else if (valeurOperateur == ">") {
                 p_code.push_back(SUP);
-            } else if (this->uniteLexicale["chaine"] == ">=") {
+                file << "SUP" << endl;
+            } else if (valeurOperateur == ">=") {
                 p_code.push_back(SUPE);
-            } else if (this->uniteLexicale["chaine"] == "<") {
+                file << "SUPE" << endl;
+            } else if (valeurOperateur == "<") {
                 p_code.push_back(INF);
-            } else if (this->uniteLexicale["chaine"] == "<=") {
+                file << "INF" << endl;
+            } else if (valeurOperateur == "<=") {
                 p_code.push_back(INFE);
-            } else if (this->uniteLexicale["chaine"] == "!=") {
+                file << "INFE" << endl;
+            } else if (valeurOperateur == "!=") {
                 p_code.push_back(DIFF);
+                file << "DIFF" << endl;
             }
             break;
         // Premiere partie d'un JIF (IF) (chargé le JIF + l'adresse laissée vide pour jump si faux) (20)
         case 14:
-            std::cout << "Premiere partie d'un JIF (IF)" << '\n';
+            //std::cout << "Premiere partie d'un JIF (IF)" << '\n';
             p_code.push_back(JIF);
+            p_code.push_back(-9999);
             pilex.push_back(p_code.size()-1);
+            file << "JIF : " << p_code.size()-1 << endl;
             break;
         // Deuxieme partie d'un JIF (ELSE) (mettre l'adresse du saut) (21)
         case 15:
-        std::cout << "Deuxieme partie d'un JIF (ELSE)" << '\n';
-            p_code[pilex.back()] = p_code.size();
-            pilex.pop_back();
+            //std::cout << "Deuxieme partie d'un JIF (ELSE) pilex : " << pilex[pilex.size()-1] << '\n';
+            p_code[pilex[pilex.size()-2]] = p_code.size();
+            file << "Value for JIF : " << pilex[pilex.size()-2] << " : " << p_code.size() << endl;
             break;
         // Troisieme partie d'un JIF (THEN) (mettre un JMP pour sauté après le else) (22)
         case 16:
-            std::cout << "Troisieme partie d'un JIF (THEN)" << '\n';
-            p_code.push_back(JIF);
+            //std::cout << "Troisieme partie d'un JIF (THEN)" << '\n';
+            p_code.push_back(JMP);
+            p_code.push_back(-9999);
             pilex.push_back(p_code.size()-1);
+            file << "JMP : " << p_code.size()-1 << endl;
             break;
         // Quatrième partie d'un JIF (ENDIF) (remplir l'adresse du JMP pour le THEN) (23)
         case 17:
-            std::cout << "Quatrième partie d'un JIF (ENDIF)" << '\n';
+            //std::cout << "Quatrième partie d'un JIF (ENDIF) " << pilex.back() << '\n';
             p_code[pilex.back()] = p_code.size();
+            file << "Value for JMP : " << pilex.back() << " : " << p_code.size() << endl;
+            pilex.pop_back();
             pilex.pop_back();
             break;
         // Pour le while, JMP pour revenir au début du while (24)
         case 18:
-            std::cout << "Pour le while, JMP pour revenir au début du while" << '\n';
+            //std::cout << "Pour le while, JMP pour revenir au début du while" << '\n';
             p_code.push_back(JMP);
-            p_code.push_back(pilex.back()-1);
-            p_code[pilex.back()] = p_code.size();
+            p_code[pilex.back()] = p_code.size()+1;
+            file << "Value for JIF : " << pilex.back() << " : " << p_code.size()+1 << endl;
+            pilex.pop_back();
+            p_code.push_back(pilex.back());
+            file << "JMP : " << pilex.back() << endl;
+            pilex.pop_back();
             break;
         // Chargé une affectation : AFF
         case 19:
-            cout << "Chargé une affectation : AFF" << endl;
+            //cout << "Chargé une affectation : AFF" << endl;
             p_code.push_back(AFF);
+            file << "AFF" << endl;
             break;
         // STOP (Pas sur que ce soit néceassaire) (28)
         case 20:
-            cout << "STOP" << endl;
+            //cout << "STOP" << endl;
+            p_code.push_back(STOP);
+            file << "STOP" << endl;
+            break;
+        // Permet de recuperer la valeur de l'entier
+        case 21:
+            valeurEntier += op->getCode();
+            break;
+        case 22:
+            valeurOperateur = op->getCode();
+            break;
+        case 23:
+            valeurOperateurMath = op->getCode();
+            break;
+        // Chargé l'adresse de JMP de fin pour le While
+        case 24:
+            pilex.push_back(p_code.size());
+            break;
+        // Chargé le JIF avec un case vide pour connaitre au jump si faux (pour While)
+        case 25:
+            //std::cout << "Premiere partie d'un JIF (While)" << '\n';
+            p_code.push_back(JIF);
+            p_code.push_back(-9999);
             break;
         default:
             cout << "Inconnu" << endl;
@@ -368,10 +423,28 @@ void Analyseur::GPLAction(OperationElementaire* op, int actionType, AtomType aTy
     }
 }
 
-void Analyseur::setUnitelexicale() {
+void Analyseur::setUnitelexicale () {
     this->uniteLexicale = sc->scanGPL();
 }
 
 map<string, OperationElementaire*> Analyseur::getForet() {
     return this->foret;
+}
+
+int Analyseur::stringToInt (string val) {
+    std::cout << "stringToInt:: val : " << val << '\n';
+    int convert = stoi(val);
+    return convert;
+}
+
+vector<int> Analyseur::getPCode () {
+    return this->p_code;
+}
+
+vector<int> Analyseur::getPilex () {
+    return this->pilex;
+}
+
+void Analyseur::setNameProg(string nameProg) {
+    this->nameProg = nameProg;
 }
